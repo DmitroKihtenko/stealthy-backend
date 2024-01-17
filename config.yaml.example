@@ -1,0 +1,20 @@
+mongoDB:
+  database: "sharing-backend"
+  url: "mongodb://backend:password@mongo-db:27017"
+  secondsTimeout: 2
+
+server:
+  socket: "0.0.0.0:8000"
+  basePath: "/backend"
+  openapiBasePath: "/swagger"
+  jwtConfig:
+    daysLifespan: 3
+    secret: "jwt_server_secret"
+  paginationDefaultLimit: 20
+
+filesExpConfig:
+  minutesLifetimeDefault: 20
+
+logs:
+  level: "info"
+  appName: "sharing-backend"
