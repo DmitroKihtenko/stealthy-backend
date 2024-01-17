@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  mongo-db:
+    image: mongo:7.0.2-jammy
+    env_file:
+      - ".env"
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test
+      retries: 3
+      timeout: 5s
+      interval: 5s
+
+  stealthy-backend:
+    image: stealthy-backend:latest
+    build:
+      context: .
+      target: application
+    depends_on:
+      mongo-db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8000/backend/health || exit 1
+      retries: 3
+      timeout: 5s
+      interval: 5s
