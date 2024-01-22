@@ -18,7 +18,7 @@ type SignInRequest struct {
 } //@name SignInRequest
 
 type AddFileResponse struct {
-	FileId string `json:"file_id" bson:"file_id" validate:"required" example:"YTE1YzhmMjMtYTEwMi00ZmQ0LTk1ZWUtZmM4ZDAyMjc3MmNm"`
+	Identifier string `json:"identifier" bson:"identifier" validate:"required" example:"YTE1YzhmMjMtYTEwMi00ZmQ0LTk1ZWUtZmM4ZDAyMjc3MmNm"`
 } //@name AddFileResponse
 
 type ErrorResponse struct {

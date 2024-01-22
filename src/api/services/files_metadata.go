@@ -21,9 +21,9 @@ type FilesMetadataService struct {
 
 func (service FilesMetadataService) CheckFileMetadataExists(fileId string) (bool, error) {
 	var data api.FileData
-	opts := options.FindOne().SetProjection(bson.D{{Key: "file_id", Value: 1}})
+	opts := options.FindOne().SetProjection(bson.D{{Key: "identifier", Value: 1}})
 	err := service.Collection.FindOne(*service.Context, bson.D{
-		primitive.E{Key: "file_id", Value: fileId},
+		primitive.E{Key: "identifier", Value: fileId},
 	}, opts).Decode(&data)
 
 	if err == nil {
@@ -36,12 +36,12 @@ func (service FilesMetadataService) CheckFileMetadataExists(fileId string) (bool
 }
 
 func (service FilesMetadataService) AddFileMetadata(request *api.FileMetadata) (*api.AddFileResponse, error) {
-	exists, err := service.CheckFileMetadataExists(request.FileId)
+	exists, err := service.CheckFileMetadataExists(request.Identifier)
 	if exists && err != nil {
 		return nil, err
 	} else if exists {
 		err := base.ServiceError{
-			Summary: fmt.Sprintf("File '%s' already exist", request.FileId),
+			Summary: fmt.Sprintf("File '%s' already exist", request.Identifier),
 			Status:  http.StatusBadRequest,
 		}
 		return nil, err
@@ -49,7 +49,7 @@ func (service FilesMetadataService) AddFileMetadata(request *api.FileMetadata) (
 		if _, err := service.Collection.InsertOne(*service.Context, &request); err != nil {
 			return nil, base.NewDatabaseError(err)
 		}
-		return &api.AddFileResponse{FileId: request.FileId}, nil
+		return &api.AddFileResponse{Identifier: request.Identifier}, nil
 	}
 }
 
@@ -107,7 +107,7 @@ func (service FilesMetadataService) GetFileMetadata(
 ) (*api.FileMetadata, error) {
 	var fileData api.FileMetadata
 	err := service.Collection.FindOne(*service.Context, bson.D{
-		primitive.E{Key: "file_id", Value: fileId},
+		primitive.E{Key: "identifier", Value: fileId},
 	}).Decode(&fileData)
 
 	if err == nil {
