@@ -45,7 +45,7 @@ func (controller FilesController) UploadFile(c *gin.Context) {
 	}
 	fileMetadata.Username = auth.Username
 
-	fileMetadata.FileId = generateShortUUID()
+	fileMetadata.Identifier = generateShortUUID()
 
 	fileSize, err := strconv.ParseInt(c.GetHeader("Content-Length"), 10, 64)
 	if err != nil {
@@ -99,7 +99,7 @@ func (controller FilesController) UploadFile(c *gin.Context) {
 		time.Minute * time.Duration(controller.FilesExpConfig.MinutesLifetimeDefault),
 	).Unix()
 
-	fileData.FileId = fileMetadata.FileId
+	fileData.Identifier = fileMetadata.Identifier
 	fileData.Data = fileBytes
 
 	err = controller.SchemaValidator.Struct(fileMetadata)
@@ -191,12 +191,12 @@ func (controller FilesController) GetFileMetadataList(c *gin.Context) {
 // @Tags         Files
 // @Accept       json
 // @Produce      multipart/form-data
-// @Param 		 file_id path string true "File ID" example(YTE1YzhmMjMtYTEwMi00ZmQ0LTk1ZWUtZmM4ZDAyMjc3MmNm)
+// @Param 		 identifier path string true "File ID" example(YTE1YzhmMjMtYTEwMi00ZmQ0LTk1ZWUtZmM4ZDAyMjc3MmNm)
 // @Success      200
 // @Failure      400  {object}  api.ErrorResponse
 // @Failure      422  {object}  api.ErrorResponse
 // @Failure      500  {object}  api.ErrorResponse
-// @Router       /v1/files/{file_id} [get]
+// @Router       /v1/files/{identifier} [get]
 func (controller FilesController) DownloadFile(c *gin.Context) {
 	base.Logger.Info("Requested file download")
 

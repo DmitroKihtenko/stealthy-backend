@@ -6,7 +6,7 @@ type User struct {
 }
 
 type FileMetadata struct {
-	FileId     string `json:"file_id" bson:"file_id" validate:"required" example:"YTE1YzhmMjMtYTEwMi00ZmQ0LTk1ZWUtZmM4ZDAyMjc3MmNm"`
+	Identifier string `json:"identifier" bson:"identifier" validate:"required" example:"YTE1YzhmMjMtYTEwMi00ZmQ0LTk1ZWUtZmM4ZDAyMjc3MmNm"`
 	Name       string `json:"name" validate:"required,filename" example:"my_image.png"`
 	Username   string `json:"username" validate:"required,username" example:"john_doe"`
 	Size       int64  `json:"size" validate:"required,gt=0" example:"12894"`
@@ -16,6 +16,6 @@ type FileMetadata struct {
 } //@name FileMetadata
 
 type FileData struct {
-	FileId string `json:"file_id" bson:"file_id" validate:"required"`
-	Data   []byte `json:"data" validate:"required"`
+	Identifier string `json:"identifier" bson:"identifier" validate:"required"`
+	Data       []byte `json:"data" validate:"required"`
 }
