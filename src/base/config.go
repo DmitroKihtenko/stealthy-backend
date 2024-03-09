@@ -36,20 +36,20 @@ type LogConfig struct {
 	AppName string `yaml:"appName" validate:"required"`
 }
 
-type SharingBackendConfig struct {
+type BackendConfig struct {
 	MongoDB        MongoDBConfig         `yaml:"mongoDB"`
 	Server         ServerConfig          `yaml:"server"`
 	FilesExpConfig FilesExpirationConfig `yaml:"filesExpConfig"`
 	Logs           LogConfig             `yaml:"logs"`
 }
 
-func LoadConfiguration(file string) (*SharingBackendConfig, error) {
+func LoadConfiguration(file string) (*BackendConfig, error) {
 	Logger.WithFields(logrus.Fields{"filename": file}).Info(
 		"Loading configuration",
 	)
 
-	cfg := &SharingBackendConfig{}
-	cfg.setDefaults()
+	cfg := &BackendConfig{}
+	cfg.SetDefaults()
 	if err := cfg.loadFromFile(file); err != nil {
 		return nil, err
 	}
@@ -60,7 +60,7 @@ func LoadConfiguration(file string) (*SharingBackendConfig, error) {
 	return cfg, nil
 }
 
-func (cfg *SharingBackendConfig) setDefaults() {
+func (cfg *BackendConfig) SetDefaults() {
 	cfg.MongoDB.Database = "sharing-backend"
 	cfg.MongoDB.URL = "mongodb://root:secret@mongodb:27017"
 
@@ -77,7 +77,7 @@ func (cfg *SharingBackendConfig) setDefaults() {
 	cfg.Logs.AppName = "sharing-backend"
 }
 
-func (cfg *SharingBackendConfig) loadFromFile(file string) error {
+func (cfg *BackendConfig) loadFromFile(file string) error {
 	f, err := os.Open(file)
 	if err != nil {
 		return fmt.Errorf("config file '%s' open error. %s", file, err.Error())
@@ -95,7 +95,7 @@ func (cfg *SharingBackendConfig) loadFromFile(file string) error {
 	return nil
 }
 
-func (cfg *SharingBackendConfig) validate() error {
+func (cfg *BackendConfig) validate() error {
 	validatorObj := validator.New()
 	if err := validatorObj.Struct(cfg); err != nil {
 		return WrapValidationErrors(err)

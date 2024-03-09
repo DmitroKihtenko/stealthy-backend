@@ -11,7 +11,7 @@ services:
       timeout: 5s
       interval: 5s
 
-  stealthy-backend:
+  app:
     image: stealthy-backend:latest
     build:
       context: .

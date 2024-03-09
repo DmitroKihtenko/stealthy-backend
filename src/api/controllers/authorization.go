@@ -1,14 +1,14 @@
 package controllers
 
 import (
-	"SharingBackend/api/services"
-	"SharingBackend/base"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"stealthy-backend/api/services"
+	"stealthy-backend/base"
 )
 
 type AuthorizationController struct {
-	AuthService *services.AuthorizationService
+	AuthService services.BaseAuthorizationService
 }
 
 func (controller AuthorizationController) Authorize(context *gin.Context) {

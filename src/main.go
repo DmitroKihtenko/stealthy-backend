@@ -1,22 +1,22 @@
 package main
 
 import (
-	"SharingBackend/api"
-	"SharingBackend/api/controllers"
-	"SharingBackend/api/services"
-	"SharingBackend/base"
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"github.com/sv-tools/mongoifc"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"os"
+	"stealthy-backend/api"
+	"stealthy-backend/api/controllers"
+	"stealthy-backend/api/services"
+	"stealthy-backend/base"
 	"time"
 
-	"SharingBackend/docs"
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"stealthy-backend/docs"
 )
 
 // @title Sharing Backend
@@ -30,7 +30,7 @@ import (
 // @Name Access token
 // @Description Access token of authenticated user
 
-func createMongoClient(config *base.SharingBackendConfig, ctx *context.Context) *mongo.Client {
+func createMongoClient(config *base.BackendConfig, ctx *context.Context) mongoifc.Client {
 	timeout := time.Duration(config.MongoDB.SecondsTimeout) * time.Second
 	clientOptions := options.Client().
 		ApplyURI(config.MongoDB.URL).
@@ -39,14 +39,14 @@ func createMongoClient(config *base.SharingBackendConfig, ctx *context.Context) 
 		SetServerSelectionTimeout(timeout).
 		SetTimeout(timeout)
 
-	client, err := mongo.Connect(*ctx, clientOptions)
+	client, err := mongoifc.Connect(*ctx, clientOptions)
 	if err != nil {
 		panic(err)
 	}
 	return client
 }
 
-func checkMongoConnection(client *mongo.Client, ctx *context.Context) {
+func checkMongoConnection(client mongoifc.Client, ctx *context.Context) {
 	base.Logger.Info("Checking mongo DB connection")
 	if err := client.Ping(*ctx, nil); err != nil {
 		panic(err)
@@ -76,7 +76,7 @@ func processPanic() {
 	}
 }
 
-func configureSwagger(swaggerRouter *gin.RouterGroup, config *base.SharingBackendConfig) {
+func configureSwagger(swaggerRouter *gin.RouterGroup, config *base.BackendConfig) {
 	base.Logger.Info("Configuring openapi")
 
 	baseUrl := config.Server.Socket + config.Server.BasePath
@@ -108,11 +108,11 @@ func configureSwagger(swaggerRouter *gin.RouterGroup, config *base.SharingBacken
 	)
 }
 
-func setLogger(config *base.SharingBackendConfig) {
+func setLogger(config *base.BackendConfig) {
 	base.Logger = base.CreateLogger(config)
 }
 
-func runServer(engine *gin.Engine, config *base.SharingBackendConfig) {
+func runServer(engine *gin.Engine, config *base.BackendConfig) {
 	base.Logger.Info("Starting server")
 	if err := engine.Run(config.Server.Socket); err != nil {
 		panic(err)

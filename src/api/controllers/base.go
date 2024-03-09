@@ -1,12 +1,12 @@
 package controllers
 
 import (
-	"SharingBackend/api"
-	"SharingBackend/base"
 	"encoding/base64"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
+	"stealthy-backend/api"
+	"stealthy-backend/base"
 )
 
 func generateShortUUID() string {

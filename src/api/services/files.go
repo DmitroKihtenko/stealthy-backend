@@ -1,21 +1,29 @@
 package services
 
 import (
-	"SharingBackend/api"
-	"SharingBackend/base"
 	"context"
 	"errors"
 	"fmt"
+	"github.com/sv-tools/mongoifc"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"net/http"
+	"stealthy-backend/api"
+	"stealthy-backend/base"
 )
 
+type BaseFilesService interface {
+	CheckFileDataExists(fileId string) (bool, error)
+	AddFile(request *api.FileData) (*api.AddFileResponse, error)
+	GetFile(fileId string) (*api.FileData, error)
+}
+
 type FilesService struct {
+	BaseFilesService
 	Context    *context.Context
-	Collection *mongo.Collection
+	Collection mongoifc.Collection
 }
 
 func (service FilesService) CheckFileDataExists(fileId string) (bool, error) {
@@ -45,7 +53,7 @@ func (service FilesService) AddFile(request *api.FileData) (*api.AddFileResponse
 		}
 		return nil, err
 	} else {
-		if _, err := service.Collection.InsertOne(*service.Context, &request); err != nil {
+		if _, err := service.Collection.InsertOne(*service.Context, request); err != nil {
 			return nil, base.NewDatabaseError(err)
 		}
 		return &api.AddFileResponse{Identifier: request.Identifier}, nil
