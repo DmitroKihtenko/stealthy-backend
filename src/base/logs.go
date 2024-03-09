@@ -23,7 +23,7 @@ func (hook ExtraFieldsHook) Fire(entry *logrus.Entry) error {
 
 var Logger = CreateLogger(nil)
 
-func CreateLogger(config *SharingBackendConfig) *logrus.Logger {
+func CreateLogger(config *BackendConfig) *logrus.Logger {
 	var level logrus.Level
 	var hook ExtraFieldsHook
 	if config != nil {

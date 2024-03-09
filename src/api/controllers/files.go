@@ -1,9 +1,6 @@
 package controllers
 
 import (
-	"SharingBackend/api"
-	"SharingBackend/api/services"
-	"SharingBackend/base"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/sirupsen/logrus"
@@ -11,14 +8,17 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"stealthy-backend/api"
+	"stealthy-backend/api/services"
+	"stealthy-backend/base"
 	"strconv"
 	"strings"
 	"time"
 )
 
 type FilesController struct {
-	FilesService         *services.FilesService
-	FilesMetadataService *services.FilesMetadataService
+	FilesService         services.BaseFilesService
+	FilesMetadataService services.BaseFilesMetadataService
 	FilesExpConfig       *base.FilesExpirationConfig
 	SchemaValidator      *validator.Validate
 }

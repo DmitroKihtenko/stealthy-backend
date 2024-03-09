@@ -1,11 +1,11 @@
 package services
 
 import (
-	"SharingBackend/api"
-	"SharingBackend/base"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"net/http"
+	"stealthy-backend/api"
+	"stealthy-backend/base"
 	"time"
 )
 
@@ -14,7 +14,13 @@ type JWTClaim struct {
 	jwt.StandardClaims
 }
 
+type BaseAuthorizationService interface {
+	GenerateToken(user *api.User) (string, error)
+	ParseToken(tokenString string) (*api.User, error)
+}
+
 type AuthorizationService struct {
+	BaseAuthorizationService
 	JwtConfig *base.JwtConfig
 }
 

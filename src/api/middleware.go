@@ -1,12 +1,12 @@
 package api
 
 import (
-	"SharingBackend/base"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"stealthy-backend/base"
 )
 
 func NoRouteHandler(c *gin.Context) {

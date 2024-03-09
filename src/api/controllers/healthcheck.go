@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"SharingBackend/api"
-	"SharingBackend/base"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"stealthy-backend/api"
+	"stealthy-backend/base"
 )
 
 // CheckHealth Service health

@@ -1,17 +1,17 @@
 package controllers
 
 import (
-	"SharingBackend/api"
-	"SharingBackend/api/services"
-	"SharingBackend/base"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"net/http"
+	"stealthy-backend/api"
+	"stealthy-backend/api/services"
+	"stealthy-backend/base"
 )
 
 type TokenController struct {
-	UserService     *services.UserService
-	AuthService     *services.AuthorizationService
+	UserService     services.BaseUserService
+	AuthService     services.BaseAuthorizationService
 	SchemaValidator *validator.Validate
 }
 

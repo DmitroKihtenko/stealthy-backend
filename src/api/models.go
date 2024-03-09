@@ -2,7 +2,7 @@ package api
 
 type User struct {
 	Username     string `json:"username" validate:"required,username"`
-	PasswordHash string `json:"password_hash" bson:"password_hash" validate:"required"`
+	PasswordHash string `json:"password_hash" bson:"password_hash"`
 }
 
 type FileMetadata struct {

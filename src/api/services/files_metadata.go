@@ -1,25 +1,39 @@
 package services
 
 import (
-	"SharingBackend/api"
-	"SharingBackend/base"
 	"context"
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"github.com/sv-tools/mongoifc"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"net/http"
+	"stealthy-backend/api"
+	"stealthy-backend/base"
 )
 
-type FilesMetadataService struct {
-	Context    *context.Context
-	Collection *mongo.Collection
+type BaseFilesMetadataService interface {
+	CheckFileMetadataExists(fileId string) (bool, error)
+	AddFileMetadata(request *api.FileMetadata) (*api.AddFileResponse, error)
+	GetFileMetadataList(
+		queryParams *api.PaginationQueryParameters,
+		username string,
+	) (*api.FileMetadataListResponse, error)
+	GetFileMetadata(fileId string) (*api.FileMetadata, error)
 }
 
-func (service FilesMetadataService) CheckFileMetadataExists(fileId string) (bool, error) {
+type FilesMetadataService struct {
+	BaseFilesMetadataService
+	Context    *context.Context
+	Collection mongoifc.Collection
+}
+
+func (service FilesMetadataService) CheckFileMetadataExists(
+	fileId string,
+) (bool, error) {
 	var data api.FileData
 	opts := options.FindOne().SetProjection(bson.D{{Key: "identifier", Value: 1}})
 	err := service.Collection.FindOne(*service.Context, bson.D{
@@ -35,7 +49,9 @@ func (service FilesMetadataService) CheckFileMetadataExists(fileId string) (bool
 	}
 }
 
-func (service FilesMetadataService) AddFileMetadata(request *api.FileMetadata) (*api.AddFileResponse, error) {
+func (service FilesMetadataService) AddFileMetadata(
+	request *api.FileMetadata,
+) (*api.AddFileResponse, error) {
 	exists, err := service.CheckFileMetadataExists(request.Identifier)
 	if exists && err != nil {
 		return nil, err
@@ -46,7 +62,9 @@ func (service FilesMetadataService) AddFileMetadata(request *api.FileMetadata) (
 		}
 		return nil, err
 	} else {
-		if _, err := service.Collection.InsertOne(*service.Context, &request); err != nil {
+		if _, err := service.Collection.InsertOne(
+			*service.Context, &request,
+		); err != nil {
 			return nil, base.NewDatabaseError(err)
 		}
 		return &api.AddFileResponse{Identifier: request.Identifier}, nil
@@ -81,7 +99,7 @@ func (service FilesMetadataService) GetFileMetadataList(
 		err := base.NewDatabaseError(err)
 		return nil, err
 	}
-	defer func(cursor *mongo.Cursor, ctx *context.Context) {
+	defer func(cursor mongoifc.Cursor, ctx *context.Context) {
 		err := cursor.Close(*ctx)
 		if err != nil {
 			base.Logger.WithFields(logrus.Fields{
@@ -96,7 +114,9 @@ func (service FilesMetadataService) GetFileMetadataList(
 			err := base.NewDatabaseError(err)
 			return nil, err
 		}
-		metadataListResponse.Records = append(metadataListResponse.Records, &fileMetadata)
+		metadataListResponse.Records = append(
+			metadataListResponse.Records, &fileMetadata,
+		)
 	}
 
 	return &metadataListResponse, nil

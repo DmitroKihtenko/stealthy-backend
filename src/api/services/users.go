@@ -1,16 +1,17 @@
 package services
 
 import (
-	"SharingBackend/api"
-	"SharingBackend/base"
 	"context"
 	"errors"
 	"fmt"
+	"github.com/sv-tools/mongoifc"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
+	"stealthy-backend/api"
+	"stealthy-backend/base"
 )
 
 func CheckPasswordEquals(password string, hash string) bool {
@@ -18,12 +19,25 @@ func CheckPasswordEquals(password string, hash string) bool {
 	return err == nil
 }
 
-type UserService struct {
-	Context    *context.Context
-	Collection *mongo.Collection
+func GeneratePasswordHash(rawValue string) ([]byte, error) {
+	return bcrypt.GenerateFromPassword([]byte(rawValue), base.PasswordCost)
 }
 
-func (service *UserService) checkUserExists(request *api.SignUpRequest) (bool, error) {
+type BaseUserService interface {
+	CheckUserExists(request *api.SignUpRequest) (bool, error)
+	AddUser(request *api.SignUpRequest) (*api.UserResponse, error)
+	GetUserByUsername(username string) (*api.User, error)
+	GetUserPublicData(username string) (*api.UserResponse, error)
+	GetUserByCredentials(request *api.SignInRequest) (*api.User, error)
+}
+
+type UserService struct {
+	BaseUserService
+	Context    *context.Context
+	Collection mongoifc.Collection
+}
+
+func (service *UserService) CheckUserExists(request *api.SignUpRequest) (bool, error) {
 	var user api.User
 	err := service.Collection.FindOne(*service.Context, bson.D{primitive.E{
 		Key: "username", Value: request.Username},
@@ -39,7 +53,7 @@ func (service *UserService) checkUserExists(request *api.SignUpRequest) (bool, e
 }
 
 func (service *UserService) AddUser(request *api.SignUpRequest) (*api.UserResponse, error) {
-	exists, err := service.checkUserExists(request)
+	exists, err := service.CheckUserExists(request)
 	if exists && err != nil {
 		return nil, err
 	} else if exists {
@@ -49,7 +63,7 @@ func (service *UserService) AddUser(request *api.SignUpRequest) (*api.UserRespon
 		}
 		return nil, err
 	} else {
-		bytes, err := bcrypt.GenerateFromPassword([]byte(request.Password), base.PasswordCost)
+		bytes, err := GeneratePasswordHash(request.Password)
 		user := api.User{
 			Username:     request.Username,
 			PasswordHash: string(bytes),

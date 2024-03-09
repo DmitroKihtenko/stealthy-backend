@@ -18,14 +18,14 @@ Works on HTTP web protocol.
 Installed Docker and Docker-compose plugin
 
 ### API
-You can view API details using Openapi standard mapping /swagger/index.html
+You can view API details using Openapi standard mapping `/swagger/index.html`
 
 ### How to up and run
 #### Configure application
-1. Copy files: '.env.example' to '.env', 'config.yaml.example' to
-'config.yaml'.
+1. Copy files: `.env.example` to `.env`, `config.yaml.example` to
+`config.yaml`.
 2. Make changes you need in configuration files (details about configs can
-be found in 'config.yaml.example' and '.env.example' files)
+be found in `config.yaml.example` and `.env.example` files)
 
 #### Build docker images
 Build docker images and start service
@@ -36,4 +36,10 @@ docker compose up
 Stop and remove containers after application use
 ```bash
 docker compose down
+```
+
+### How to run application tests
+```shell
+docker compose -f docker-compose-test.yml up \
+  && docker compose -f docker-compose-test.yml down
 ```
