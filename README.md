@@ -21,13 +21,13 @@ Installed Docker and Docker-compose plugin
 You can view API details using Openapi standard mapping `/swagger/index.html`
 
 ### How to up and run
-#### Configure application
+Configure application
 1. Copy files: `.env.example` to `.env`, `config.yaml.example` to
 `config.yaml`.
 2. Make changes you need in configuration files (details about configs can
 be found in `config.yaml.example` and `.env.example` files)
 
-#### Build docker images
+Build docker images
 Build docker images and start service
 ```bash
 docker compose up
@@ -40,6 +40,19 @@ docker compose down
 
 ### How to run application tests
 ```shell
-docker compose -f docker-compose-test.yml up \
-  && docker compose -f docker-compose-test.yml down
+docker compose -f docker-compose-test.yml build test && \
+docker compose -f docker-compose-test.yml run --rm test
+```
+
+### How to check and format code
+Check code style:
+```shell
+docker compose -f docker-compose-test.yml build check-code && \
+docker compose -f docker-compose-test.yml run --rm check-code
+```
+
+Format code:
+```shell
+docker compose -f docker-compose-test.yml build check-style && \
+docker compose -f docker-compose-test.yml run --rm check-style gofmt -l ./
 ```

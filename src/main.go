@@ -146,14 +146,22 @@ func main() {
 		config.MongoDB.Database,
 	).Collection(string(base.FilesMetadata))
 
-	authService := &services.AuthorizationService{JwtConfig: &config.Server.JwtConfig}
-	userService := &services.UserService{Context: &ctx, Collection: usersCollection}
-	filesService := &services.FilesService{Context: &ctx, Collection: filesCollection}
+	authService := &services.AuthorizationService{
+		JwtConfig: &config.Server.JwtConfig,
+	}
+	userService := &services.UserService{
+		Context: &ctx, Collection: usersCollection,
+	}
+	filesService := &services.FilesService{
+		Context: &ctx, Collection: filesCollection,
+	}
 	filesMetadataService := &services.FilesMetadataService{
 		Context: &ctx, Collection: filesMetadataCollection,
 	}
 
-	authController := controllers.AuthorizationController{AuthService: authService}
+	authController := controllers.AuthorizationController{
+		AuthService: authService,
+	}
 	tokenController := controllers.TokenController{
 		SchemaValidator: schemaValidator,
 		AuthService:     authService,

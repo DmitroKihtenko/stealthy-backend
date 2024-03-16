@@ -6,3 +6,13 @@ services:
     build:
       context: .
       target: test_application
+    network_mode: bridge
+
+  check-code:
+    image: stealthy-backend:code-check-latest
+    build:
+      context: .
+      target: check_code_app
+    network_mode: bridge
+    volumes:
+      - ./src:/app

@@ -122,7 +122,7 @@ func (service *UserService) GetUserByCredentials(request *api.SignInRequest) (*a
 		return user, nil
 	} else {
 		return nil, base.ServiceError{
-			Summary: fmt.Sprintf("Invalid password"),
+			Summary: "Invalid password",
 			Status:  http.StatusForbidden,
 		}
 	}

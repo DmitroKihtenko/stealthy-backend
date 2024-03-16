@@ -25,7 +25,7 @@ type FilesController struct {
 
 // UploadFile Upload file
 // @Summary      Upload file for user
-// @Description  This method uploads a new file to user's space using multipart form data
+// @Description  This method uploads a new file to user's space
 // @Tags         Files
 // @Security     User
 // @Accept       multipart/form-data
@@ -96,7 +96,9 @@ func (controller FilesController) UploadFile(c *gin.Context) {
 
 	fileMetadata.Creation = time.Now().Unix()
 	fileMetadata.Expiration = time.Now().Add(
-		time.Minute * time.Duration(controller.FilesExpConfig.MinutesLifetimeDefault),
+		time.Minute * time.Duration(
+			controller.FilesExpConfig.MinutesLifetimeDefault,
+		),
 	).Unix()
 
 	fileData.Identifier = fileMetadata.Identifier
