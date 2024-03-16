@@ -11,21 +11,33 @@ func ValidateUsername(fl validator.FieldLevel) bool {
 	username := fl.Field().String()
 
 	pattern := `^[a-zA-Z0-9_-]{4,24}$`
-	return regexp.MustCompile(pattern).MatchString(username)
+	if !regexp.MustCompile(pattern).MatchString(username) {
+		return false
+	}
+
+	return true
 }
 
 func ValidatePassword(fl validator.FieldLevel) bool {
 	password := fl.Field().String()
 
 	pattern := `^[a-zA-Z0-9_!@#$%^&*]{8,24}$`
-	return regexp.MustCompile(pattern).MatchString(password)
+	if !regexp.MustCompile(pattern).MatchString(password) {
+		return false
+	}
+
+	return true
 }
 
 func ValidateFilename(fl validator.FieldLevel) bool {
 	filename := fl.Field().String()
 
 	pattern := `^[^<>:"/\\|?*]{1,200}$`
-	return regexp.MustCompile(pattern).MatchString(filename)
+	if !regexp.MustCompile(pattern).MatchString(filename) {
+		return false
+	}
+
+	return true
 }
 
 func CreateValidator() *validator.Validate {
