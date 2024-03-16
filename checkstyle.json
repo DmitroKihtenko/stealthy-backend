@@ -8,6 +8,6 @@
   "camel_name": true,
   "ignore": ["./docs"],
   "fatal":[
-    "formated"
+    "formated", "file_line"
   ]
 }
