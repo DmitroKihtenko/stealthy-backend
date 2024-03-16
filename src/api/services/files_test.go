@@ -150,7 +150,7 @@ func TestGetFileNotFound(t *testing.T) {
 
 	assert.Nil(t, result)
 	assert.Equal(t, base.ServiceError{
-		Summary: fmt.Sprintf("File '%s' not found", fileData.Identifier),
+		Summary: fmt.Sprintf("'%s' not found", fileData.Identifier),
 		Status:  http.StatusNotFound,
 	}, err)
 }

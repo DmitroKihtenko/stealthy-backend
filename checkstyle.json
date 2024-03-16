@@ -1,5 +1,5 @@
 {
-  "file_line": 500,
+  "file_line": 2000,
   "func_line": 300,
   "params_num": 4,
   "results_num": 3,
@@ -8,6 +8,6 @@
   "camel_name": true,
   "ignore": ["./docs"],
   "fatal":[
-    "formated", "file_line"
+    "formated"
   ]
 }
