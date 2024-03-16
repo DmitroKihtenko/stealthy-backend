@@ -1,11 +1,11 @@
 FROM golang:1.21.1-alpine AS test_application
 WORKDIR /src
 COPY ./src/ /src/
+RUN go install github.com/swaggo/swag/cmd/swag@v1.16.2 && swag init
 CMD ["go", "test", "-v", "./..."]
 
 FROM test_application AS builder
-RUN go install github.com/swaggo/swag/cmd/swag@v1.16.2 \
-    && swag init && go build -o /app/stealthy-backend
+RUN go build -o /app/stealthy-backend
 
 FROM golang:1.21.1-alpine AS application
 ARG UID=1001
