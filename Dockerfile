@@ -1,8 +1,17 @@
-FROM golang:1.21.1-alpine AS test_application
-WORKDIR /src
-COPY ./src/ /src/
+FROM golang:1.21.1-alpine AS check_code_app
+RUN go install github.com/qiniu/checkstyle/gocheckstyle@v0.082 && \
+    go install honnef.co/go/tools/cmd/staticcheck@2023.1.7
+WORKDIR /app
+COPY checkstyle.json /
+CMD gocheckstyle -config /checkstyle.json ./ && \
+    staticcheck ./...
+
+FROM check_code_app as test_application
+COPY ./src/ ./
 RUN go install github.com/swaggo/swag/cmd/swag@v1.16.2 && swag init
-CMD ["go", "test", "-v", "./..."]
+CMD go test -v ./... && \
+    gocheckstyle -config /checkstyle.json ./ && \
+    staticcheck ./...
 
 FROM test_application AS builder
 RUN go build -o /app/stealthy-backend
