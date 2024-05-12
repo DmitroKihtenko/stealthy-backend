@@ -19,7 +19,7 @@ import (
 	"stealthy-backend/docs"
 )
 
-// @title Sharing Backend
+// @title Stealthy Backend
 // @version 1.0.0
 // @schemes http
 // @license.name Apache 2.0

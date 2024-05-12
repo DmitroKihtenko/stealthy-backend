@@ -8,16 +8,13 @@ services:
     env_file:
       - ".env"
   mongo-express:
-    image: mongo-express
+    image: mongo-express:1.0.2-20-alpine3.19
     ports:
       - "8081:8081"
     environment:
-      ME_CONFIG_MONGODB_ENABLE_ADMIN: true
-      ME_CONFIG_MONGODB_AUTH_USERNAME: "backend"
-      ME_CONFIG_MONGODB_AUTH_PASSWORD: "password"
+      ME_CONFIG_MONGODB_URL: "mongodb://backend:password@mongo-db:27017/stealthy-backend?directConnection=true&authSource=admin"
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: false
       ME_CONFIG_BASICAUTH_USERNAME: "admin"
       ME_CONFIG_BASICAUTH_PASSWORD: "admin"
-      ME_CONFIG_MONGODB_PORT: 27017
-      ME_CONFIG_MONGODB_SERVER: "mongo-db"
     depends_on:
       - mongo-db
